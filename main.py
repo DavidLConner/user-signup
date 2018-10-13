@@ -38,11 +38,11 @@ user_signup_form = """
                     <p class='error'>{password_error}</p>     
 
             <label for='verify_password'>Verify password:</label>
-                <input type='password' name='Verify_password'>
+                <input type='password' name='verify_password'>
                     <p class='error'>{verify_password_error}</p>
 
             <label for='email'>Email (optional):</label>
-                <input type='email' name='E-mail' value={email}>     
+                <input type='text' name='email' value={email}>     
                 <p class ='error'>{email_error}</p>              
 
 
@@ -72,57 +72,39 @@ def validation():
     
     username = ''
     password = ''
-    verify_password = ''
+    verify_password == password
     email = ''
     email_regex = re.compile(r"[^@\s]+@[^@\s]+\.[a-zA-Z0-9]+$")
 
-    
-    if len(username) < 3 or len(username) > 20:
+    if username != username.isalnum():
         username_error = 'Invalid entry.  This field must contain between 3-20 alpha-numeric characters.'
-        return render_template(username=username, email=email, name_error=username_error)
-    
-    if username.isalnum() and password == verify_password and len(email) > 20:
-        email_error = 'Invalid entry.  This field must contain between 3-20 alpha-numeric characters.'
-        return render_template(username=username, email=email, email_error=email_error)
-    
-    if username.isalnum() and password == verify_password and len(password) > 20:
-        password_error = 'Invalid entry.  This field must contain between 3-20 alpha-numeric characters.'
-        return render_template(username=username, email=email, password_error=password_error )
-    
-    if username.isalnum() and password == verify_password and len(password) < 3:
-        password_error = 'Invalid entry.  This field must contain between 3-20 alpha-numeric characters.'
-        return render_template(username=username, email=email, password_error=password_error)     
-    
-    if username.isalnum() and password == verify_password and len(verify_password) > 20:
-        password_error = 'Invalid entry.  This field must contain between 3-20 alpha-numeric characters.'
-        return render_template(username=username, email=email, password_error=password_error )
-    
-    if username.isalnum() and password == verify_password and len(verify_password) < 3:
-        password_error = 'Invalid entry.  This field must contain between 3-20 alpha-numeric characters.'
-        return render_template(username=username, email=email, password_error=password_error)     
-     
-    
-    if username.isalnum() and password == verify_password and len(email) < 3:
-        email_error = 'Invalid entry.  This field must contain between 3-20 alpha-numeric characters.'
-        return render_template(username=username, email=email, email_error=email_error)  
+    elif len(username) < 3 or len(username) > 20:
+        username_error = 'Invalid entry.  This field must contain between 3-20 alpha-numeric characters.'
 
-    if username.isalnum() and password == verify_password and len(email):
-        if not email_regex.match(email): 
-            email_error = 'Invalid E-mail.'
-            return render_template(username=username, email=email, email_error=email_error)
-        if email_regex.match(email):
-            return render_template('/valid_form')
 
-    if username.isalnum() and password != verify_password:
-        password_error = 'The passwords do not match.'
-        return render_template(username=username, email=email, password_error=password_error)
+    if password != password.isalnum():
+        password_error = 'Invalid entry.  This field must contain between 3-20 alpha-numeric characters.'
+    elif len(password) < 3 or len(password) > 20:
+        password_error = 'Invalid entry.  This field must contain between 3-20 alpha-numeric characters.'
+
+
+    if verify_password != password.isalnum():
+        verify_password_error = 'Your passwords do not match.'
+
+
+    if not email_regex.match(email): 
+        email_error = 'Invalid E-mail.'
+    elif len(email) < 3 or len(email) > 20:
+        email_error = 'Your email is outside the limits of 3 - 20 characters.'
+    
     else:
-        username_error = 'Invalid entry.  This field must contain between 3-20 alpha-numeric characters.'
-        return render_template(username=username, email=email, username_error=username_error)
+        if not username_error and not password_error and not verify_password_error and not email_error:
+            return redirect('/valid_form')           
+
     
 @app.route('/valid_form', methods=['POST'])
 def valid_form():
     username = request.form['username']
-    return '<h1>Hello, ' + username +'. Thanks for submitting a wonderfully valid form.</h1>'
+    return '<h1>Hello, '+ username +'. Thanks for submitting a wonderfully valid form.</h1>'
 
 app.run()
